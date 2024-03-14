@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    <h1>Listado de productos</h1>
+    <ul>
+        {{#each products}}
+            <li>{{this.title}}</li>
+        {{/each}}
+    </ul>
+    <!-- Botón para dirigirse a la página de productos en tiempo real -->
+    <a href="/realtimeproducts">
+        <button>Ver Productos en Tiempo Real</button>
+    </a>
+</body>
+</html>
