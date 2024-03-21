@@ -1,6 +1,7 @@
 const express = require('express');
+const io = require('../server').io;
 const router = express.Router();
-const ProductManager = require('../productManager');
+const ProductManager = require('../ProductManager');
 
 const productManager = new ProductManager('./src/products.json');
 
@@ -40,6 +41,12 @@ router.post('/', async (req, res) => {
             newProduct.stock
         ]);
         res.status(201).json({ id: productId });
+
+        // Emitir evento de WebSockets para actualizar la lista de productos
+        io.emit('updateProducts', newProduct);
+
+        // Guardar el nuevo producto en el archivo .json
+        await productManager.saveProductsToFile();
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -61,9 +68,16 @@ router.delete('/:pid', async (req, res) => {
         const { pid } = req.params;
         await productManager.deleteProduct(pid);
         res.json({ message: 'Producto eliminado exitosamente' });
+
+        // Emitir evento de WebSockets para eliminar el producto de la lista
+        io.emit('removeProduct', pid);
+
+        // Eliminar el producto del archivo .json
+        await productManager.saveProductsToFile();
     } catch (error) {
         res.status(404).json({ message: error.message });
     }
 });
 
 module.exports = router;
+
