@@ -1,6 +1,6 @@
 const express = require('express');
-const io = require('../server').io;
 const router = express.Router();
+const io = require('../server').io;
 const ProductManager = require('../ProductManager');
 
 const productManager = new ProductManager('./src/products.json');
@@ -45,8 +45,7 @@ router.post('/', async (req, res) => {
         // Emitir evento de WebSockets para actualizar la lista de productos
         io.emit('updateProducts', newProduct);
 
-        // Guardar el nuevo producto en el archivo .json
-        await productManager.saveProductsToFile();
+        // No es necesario guardar el nuevo producto aquí, ya que ya se hace dentro de productManager.addProduct
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
@@ -80,4 +79,3 @@ router.delete('/:pid', async (req, res) => {
 });
 
 module.exports = router;
-
